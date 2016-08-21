@@ -37,13 +37,27 @@ public class Test {
 
         StringBuffer sb = new StringBuffer();
 
-        sb.append("GET " + path + " HTTP/1.1\r\n");
+   /*     sb.append("GET " + path + " HTTP/1.1\r\n");
         sb.append("Host: " + host + ":" + port + "\r\n");
+        sb.append("\r\n");*/
+
+        String postData = "username=baiye&password=aaa";
+
+        String contentType = "application/x-www-form-urlencoded";
+
+
+        sb.append("POST " + path + " HTTP/1.1\r\n");
+        sb.append("Host: " + host + ":" + port + "\r\n");
+        sb.append("Content-Length: " + postData.length() + "\r\n");
+        sb.append("Content-Type: " + contentType + "\r\n");
         sb.append("\r\n");
+        sb.append(postData);
 
         System.out.println(sb.toString());
 
         bw.write(sb.toString());
+
+
 
         bw.flush();
 
