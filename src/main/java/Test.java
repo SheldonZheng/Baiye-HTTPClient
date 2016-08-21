@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 
 /**
  * Created by Baiye on 8/20/16.
@@ -7,6 +8,8 @@ import java.net.*;
 public class Test {
 
     public static void main(String args[]) throws Exception {
+
+        long beforec = System.currentTimeMillis();
 
         String path = "";
         String host = "";
@@ -44,7 +47,27 @@ public class Test {
 
         bw.flush();
 
-        BufferedInputStream bis = new BufferedInputStream(socket.getInputStream());
+        InputStream is = socket.getInputStream();
+
+        String line = null;
+
+        int contentLength = 0;
+
+        do
+        {
+            line = readLine(is,0);
+            if(line.startsWith("Content-Length"))
+            {
+                contentLength = Integer.parseInt(line.split(":")[1].trim());
+            }
+
+            System.out.println(line);
+        } while(!line.equals("\r\n"));
+
+        System.out.println(readLine(is,contentLength));
+
+
+       /* BufferedInputStream bis = new BufferedInputStream(socket.getInputStream());
 
         BufferedReader br = new BufferedReader(new InputStreamReader(bis,"utf-8"));
 
@@ -53,13 +76,52 @@ public class Test {
         while((line = br.readLine()) != null)
         {
             System.out.println(line);
-        }
+        }*/
 
-        br.close();
+        is.close();
         bw.close();
         socket.close();
 
 
+        System.out.println(System.currentTimeMillis() - beforec);
+
+
+    }
+
+    private static String readLine(InputStream is,int contentLength) throws IOException {
+        ArrayList lineByteList = new ArrayList();
+
+        byte readByte;
+
+        int total = 0;
+
+        if(contentLength != 0)
+        {
+            do
+            {
+                readByte = (byte) is.read();
+                lineByteList.add(Byte.valueOf(readByte));
+                total++;
+            } while(total < contentLength);
+        }
+        else
+        {
+            do
+            {
+                readByte = (byte) is.read();
+                lineByteList.add(Byte.valueOf(readByte));
+            } while(readByte != 10);
+        }
+
+        byte[] tempByteArr = new byte[lineByteList.size()];
+        for(int i = 0;i < lineByteList.size();i++)
+        {
+            tempByteArr[i] = ((Byte) lineByteList.get(i)).byteValue();
+        }
+
+        lineByteList.clear();
+
+        return new String(tempByteArr,"utf-8");
 
 
     }
