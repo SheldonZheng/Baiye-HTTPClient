@@ -5,12 +5,15 @@ import com.baiye.Model.HTTPResData;
 import java.io.BufferedWriter;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
-import java.net.*;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketAddress;
+import java.net.URL;
 
 /**
- * Created by Baiye on 8/21/16.
+ * Created by Baiye on 9/3/16.
  */
-public class HTTPGetClient extends HTTPClient{
+public class HTTPPostClient extends HTTPClient{
 
     public HTTPResData sendRequest(String httpUrl, String data) throws Exception
     {
@@ -33,9 +36,14 @@ public class HTTPGetClient extends HTTPClient{
 
         StringBuffer sb = new StringBuffer();
 
-        sb.append("GET " + path + "?" + query + " HTTP/1.1\r\n");
+        String contentType = "application/x-www-form-urlencoded";
+
+        sb.append("POST " + path + " HTTP/1.1\r\n");
         sb.append("Host: " + host + ":" + port + "\r\n");
+        sb.append("Content-Length: " + data.length() + "\r\n");
+        sb.append("Content-Type: " + contentType + "\r\n");
         sb.append("\r\n");
+        sb.append(data);
 
         System.out.println(sb.toString());
 
@@ -69,6 +77,4 @@ public class HTTPGetClient extends HTTPClient{
 
         return resData;
     }
-
-
 }

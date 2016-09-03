@@ -17,7 +17,7 @@ public class HTTPGetClientTest {
         HTTPClient client = new HTTPGetClient();
         HTTPResData resData = null;
         try {
-            resData = client.sendRequest("http://127.0.0.1:8080/test","");
+            resData = client.sendRequest("http://127.0.0.1:8080/test?a=1&b=白叶","");
         } catch (Exception e) {
             e.printStackTrace();
         }
